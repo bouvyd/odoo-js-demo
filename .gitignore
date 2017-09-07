@@ -1,0 +1,16 @@
+# dotfiles
+.*
+!.gitignore
+# compiled python files
+*.py[co]
+
+# various virtualenv
+/bin/
+/build/
+/dist/
+/include/
+/lib/
+/man/
+/share/
+/src/
+
