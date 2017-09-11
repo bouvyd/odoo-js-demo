@@ -62,7 +62,9 @@ var TicketApp = Widget.extend({
     _onTicketSubmit: function (ev) {
         var self = this;
         var data = ev.data;
-        this.user.createTicket(data);
+        this.user.createTicket(data).then(function (new_ticket) {
+            self.list.insertTicket(new_ticket);
+        });
     },
 });
 
@@ -72,6 +74,20 @@ var TicketList = Widget.extend({
     init: function (parent, tickets) {
         this._super.apply(this, arguments);
         this.tickets = tickets;
+    },
+    /**
+     * Insert a new ticket instance in the list. If the list is hidden
+     * (because there was no ticket prior to the insertion), call for
+     * a complete rerendering instead.
+     * @param  {OdooClass.Ticket} ticket Ticket to insert in the list
+     */
+    insertTicket: function (ticket) {
+        if (!this.$('tbody').length) {
+            this._rerender();
+            return;
+        }
+        var ticket_node = qweb.render('ticket_viewer.ticket_list.ticket', {ticket: ticket});
+        this.$('tbody').prepend(ticket_node);
     },
     /**
      * Rerender the whole widget; will be useful when we switch from
