@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ticket_action" model="ir.actions.act_window">
+        <field name="name">Tickets</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">demo.ticket</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record model="ir.ui.view" id="ticket_tree_view">
+        <field name="name">demo.ticket.tree</field>
+        <field name="model">demo.ticket</field>
+        <field name="arch" type="xml">
+            <tree string="Tickets" editable="top">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="partner_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <menuitem name="Tickets" id="ticket_base_menu" web_icon="ticket_viewer,static/description/icon.png"/>
+    <menuitem id="ticket_menu" action="ticket_action" name="Tickets" parent="ticket_base_menu" sequence="10"/>
+</odoo>

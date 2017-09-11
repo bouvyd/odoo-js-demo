@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_ticket_1" model="demo.ticket">
+        <field name="name">Unable to login</field>
+        <field name="description">
+I keep entering every password I know without success :(
+        </field>
+        <field name="partner_id" ref="base.demo_user0_res_partner"/>
+    </record>
+
+    <record id="demo_ticket_2" model="demo.ticket">
+        <field name="name">Unable to work when internet is down</field>
+        <field name="description">
+This is unacceptable.
+        </field>
+        <field name="partner_id" ref="base.demo_user0_res_partner"/>
+    </record>
+</odoo>

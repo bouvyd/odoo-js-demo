@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_ticket_portal" model="ir.rule">
+        <field name="name">Demo Ticket - Own Ticket on Portal</field>
+        <field  name="model_id" ref="model_demo_ticket"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+</odoo>

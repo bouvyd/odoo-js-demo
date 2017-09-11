@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="ticket_assets" name="Ticket Viewer Application Assets" inherit_id="web.assets_frontend" primary="True">
+        <xpath expr="." position="inside">
+            <link rel='stylesheet' type="text/less" href='/ticket_viewer/static/src/less/ticket_viewer.less'/>
+            <script type="text/javascript" src="/bus/static/src/js/bus.js"/>
+            <script type="text/javascript" src="/web/static/src/js/widgets/notification.js"/>
+            <script type="text/javascript" src="/ticket_viewer/static/src/js/models.js"/>
+            <script type="text/javascript" src="/ticket_viewer/static/src/js/controllers.js"/>
+        </xpath>
+    </template>
+
+    <template id="ticket_list">
+        <t t-call="web.layout">
+            <t t-set="head">  
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="ticket_viewer.ticket_assets" t-js="false"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="ticket_viewer.ticket_assets" t-css="false"/>
+                <script type="text/javascript">
+                    odoo.session_info = {
+                        user_id: <t t-esc="json.dumps(request.env.user.id)"/>
+                    };
+                </script>
+            </t>
+            <div class="container-fluid">
+                <div class="row o_ticket_app"/>
+            </div>
+        </t>
+    </template>
+</odoo>
