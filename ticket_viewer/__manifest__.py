@@ -5,7 +5,7 @@
     'author': 'Damien Bouvy',
     'website': 'https://www.damienbouvy.be',
     'summary': 'Demo a WebApp to view tickets online',
-    'depends': ['web', 'base_setup'],
+    'depends': ['web', 'base_setup', 'bus'],
     'description': """
 Ticket Viewer Demo
 ==================
