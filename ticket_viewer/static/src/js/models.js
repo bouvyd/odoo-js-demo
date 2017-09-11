@@ -49,6 +49,30 @@ var User = Class.extend({
         this.tickets = [];
     },
     /**
+     * Create a ticket on the server via rpc call and create it
+     * client-side in the User tickets' collection on success.
+     * @param  {Object} values Object containing the 'name'
+     *                         and 'description' content for
+     *                         the new ticket
+     * @return {jQuery.Deferred} The newly created ticket.
+     */
+    createTicket: function (values) {
+        var self = this;
+        var ticket_values = {
+            name: values.name,
+            description: values.description
+        };
+        return rpc.query({
+            model: 'demo.ticket',
+            method: 'create',
+            args: [ticket_values]
+        }).then(function (ticket_id) {
+            var ticket = new Ticket({id: ticket_id});
+            self.tickets.push(ticket);
+            return ticket.update();
+        });
+    },
+    /**
      * Fetch the default fields for the user on the server.
      * @return {jQuery.Deferred} Resolves to the udpate User.
      */

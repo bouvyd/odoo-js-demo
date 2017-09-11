@@ -20,6 +20,9 @@
                 </div><!-- /.container-fluid -->
             </nav>
             <div class="col-md-8 col-md-offset-2 col-xs-12 o_ticket_list"/>
+            <div class="col-md-8 col-md-offset-2 col-xs-12 text-right">
+                <button class="btn btn-primary o_new_ticket">Submit Ticket</button>
+            </div>
         </div>
     </t>
 
@@ -48,5 +51,20 @@
             <td><t t-esc="ticket.name"/></td>
             <td><t t-esc="ticket.description"/></td>
         </tr>
+    </t>
+
+    <t t-name="ticket_viewer.ticket_form">
+        <div>
+            <form action="/ticket/submit" method="POST">
+                <div class="form-group">
+                    <label for="name">Title</label>
+                    <input type="text" name="name" size="40" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" cols="40" rows="8" class="form-control"/>
+                </div>
+            </form>
+        </div>
     </t>
 </odoo>
