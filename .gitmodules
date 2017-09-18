@@ -1,0 +1,4 @@
+[submodule "hibou-io/odoo-newrelic"]
+	path = hibou-io/odoo-newrelic
+	url = git@github.com:hibou-io/odoo-newrelic.git
+	branch = 10.0
