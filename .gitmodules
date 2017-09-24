@@ -2,3 +2,8 @@
 	path = hibou-io/odoo-newrelic
 	url = git@github.com:hibou-io/odoo-newrelic.git
 	branch = 10.0
+
+[submodule "OCA/social"]
+	path = OCA/social
+	url = git@github.com:OCA/social.git
+	branch = 10.0
