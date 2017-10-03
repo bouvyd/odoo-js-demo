@@ -10,7 +10,7 @@
                     </div>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#">
+                            <a href="#" class="ticket_about">
                                 <img class="o_user_avatar" t-attf-src="data:image/png;base64,{{ widget.user.image_small }}"/>
                                 <t t-esc="widget.user.name"/>
                             </a>
@@ -65,6 +65,14 @@
                     <textarea name="description" cols="40" rows="8" class="form-control"/>
                 </div>
             </form>
+        </div>
+    </t>
+
+    <t t-name="ticket_viewer.about">
+        <div>
+            <h1>Hi</h1>
+            <p>Thank you for viewing this demo.</p>
+            <img src="https://odoocdn.com/openerp_website/static/src/img/2016/odoo-experience/learn_03.jpg"/>
         </div>
     </t>
 

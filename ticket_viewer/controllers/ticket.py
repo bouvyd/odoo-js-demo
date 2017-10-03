@@ -16,7 +16,7 @@ class TicketController(BusController):
             channels.append(ticket_channel)
         return super(TicketController, self)._poll(dbname, channels, last, options)
 
-    @route('/tickets', auth='user')
+    @route(['/tickets', '/tickets/<path:route>'], auth='user')
     def view_tickets(self, **kwargs):
         tickets = request.env['demo.ticket'].search([])
         return request.render('ticket_viewer.ticket_list', {'tickets': tickets})

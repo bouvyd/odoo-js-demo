@@ -7,6 +7,7 @@ var Dialog = require('web.Dialog');
 var notification = require('web.notification');
 var User = require('demo.classes').User;
 var Widget = require('web.Widget');
+var Router = require('demo.router');
 
 var qweb = core.qweb;
 var _t = core._t;
@@ -16,7 +17,8 @@ require('web.dom_ready');
 var TicketApp = Widget.extend({
     template: 'ticket_viewer.app',
     events: {
-        'click button.o_new_ticket': '_onNewTicket',
+        'click .ticket_about': function (ev) {ev.preventDefault(); Router.navigate('/about');},
+        'click button.o_new_ticket': function () {Router.navigate('/new');},
     },
     custom_events: {
         'ticket-submit': '_onTicketSubmit',
@@ -28,6 +30,17 @@ var TicketApp = Widget.extend({
     init: function (parent, options) {
         this._super.apply(this, arguments);
         this.user = new User({id: odoo.session_info.user_id});
+        var self = this;
+        Router.config({ mode: 'history', root:'/tickets'});
+
+        // adding routes
+        Router
+        .add(/new/, function () {
+            self._onNewTicket();
+        }).add(/about/, function () {
+            self._about();
+        })
+        .listen();
     },
     willStart: function () {
         return $.when(this._super.apply(this, arguments),
@@ -45,7 +58,21 @@ var TicketApp = Widget.extend({
             self.notification_manager = new notification.NotificationManager(self);
             self.notification_manager.appendTo(self.$el);
             bus.on('notification', self, self._onNotification);
+            Router.check();
         });
+    },
+    _about: function () {
+        new Dialog(this, {
+            title: _t('About'),
+            $content: qweb.render('ticket_viewer.about'),
+            buttons: [{
+                text: _t('Awesome!'),
+                click: function () {
+                    Router.navigate();
+                },
+                close: true,
+            }],
+        }).open();
     },
     /**
      * Open a new modal to encode a new ticket.
@@ -72,6 +99,7 @@ var TicketApp = Widget.extend({
         var data = ev.data;
         this.user.createTicket(data).then(function (new_ticket) {
             self.list.insertTicket(new_ticket);
+            Router.navigate('');
         });
     },
     /**

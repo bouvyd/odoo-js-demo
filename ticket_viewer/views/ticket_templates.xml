@@ -3,6 +3,7 @@
     <template id="ticket_assets" name="Ticket Viewer Application Assets" inherit_id="web.assets_frontend" primary="True">
         <xpath expr="." position="inside">
             <link rel='stylesheet' type="text/less" href='/ticket_viewer/static/src/less/ticket_viewer.less'/>
+            <script type="text/javascript" src="/ticket_viewer/static/lib/js/router.js"/>
             <script type="text/javascript" src="/bus/static/src/js/bus.js"/>
             <script type="text/javascript" src="/web/static/src/js/widgets/notification.js"/>
             <script type="text/javascript" src="/ticket_viewer/static/src/js/models.js"/>
