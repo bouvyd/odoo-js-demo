@@ -3,6 +3,7 @@ odoo.define('demo.views', function (require) {
 
 var core = require('web.core');
 var Dialog = require('web.Dialog');
+var notification = require('web.notification');
 var User = require('demo.classes').User;
 var Widget = require('web.Widget');
 
@@ -18,6 +19,8 @@ var TicketApp = Widget.extend({
     },
     custom_events: {
         'ticket-submit': '_onTicketSubmit',
+        'warning': function (ev) {this.notification_manager.warn(ev.data.msg);},
+        'notify': function (ev) {this.notification_manager.notify(ev.data.msg);},
     },
     xmlDependencies: ['/ticket_viewer/static/src/xml/ticket_views.xml'],
     /* Lifecycle */
@@ -36,6 +39,8 @@ var TicketApp = Widget.extend({
         return this._super.apply(this, arguments).then(function () {
             self.list = new TicketList(self, self.user.tickets);
             self.list.appendTo($('.o_ticket_list'));
+            self.notification_manager = new notification.NotificationManager(self);
+            self.notification_manager.appendTo(self.$el);
         });
     },
     /**
@@ -51,7 +56,6 @@ var TicketApp = Widget.extend({
                 click: function () {
                     this._onFormSubmit();
                 },
-                close: true,
             }],
         }).open();
     },
@@ -114,8 +118,13 @@ var TicketDialog = Dialog.extend({
         for (var field of formdata) {
             data[field[0]] = field[1];
         }
+        if (!data.name || !data.description) {
+            this.trigger_up('warning', {msg: _t('All fields are mandatory.')});
+            return;
+        }
         this.trigger_up('ticket-submit', data);
         form.reset();
+        this.close();
     },
 });
 
