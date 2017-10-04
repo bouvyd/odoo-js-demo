@@ -112,6 +112,36 @@ var User = Class.extend({
             return self;
         });
     },
+    /**
+     * Fetch a specified ticket id for the current user.
+     * @param  {Integer} id ID of the ticket to fetch.
+     * @return {jQuery.Deferred} Resolves to the new Ticket
+     */
+    fetchTicket: function (id) {
+        var self = this;
+        return rpc.query({
+            model: 'demo.ticket',
+            method: 'search_read',
+            args: [[['id', '=', id]]],
+            kwargs: {fields: ['id', 'name', 'description']}
+        }).then(function (ticket_values) {
+            if (ticket_values.length) {
+                var ticket = new Ticket(ticket_values[0]);
+                self.tickets.push(ticket);
+            }
+            return ticket;
+        });
+    },
+    /**
+     * Remove a specified ticket id from the collections.
+     * @param  {Integer} id ID of the ticket to remove
+     */
+    removeTicket: function (id) {
+        var t_idx = this.tickets.findIndex(t => t.id === id);
+        if (t_idx !== -1) {
+            this.tickets.splice(t_idx, 1);
+        }
+    },
 });
 
 return {

@@ -1,6 +1,7 @@
 odoo.define('demo.views', function (require) {
 'use strict';
 
+var bus = require('bus.bus').bus;
 var core = require('web.core');
 var Dialog = require('web.Dialog');
 var notification = require('web.notification');
@@ -32,7 +33,9 @@ var TicketApp = Widget.extend({
         return $.when(this._super.apply(this, arguments),
                       this.user.fetchUserInfo(),
                       this.user.fetchAllTickets()
-        );
+        ).then(function (dummy, user) {
+            bus.update_option('demo.ticket', user.partner_id);
+        });
     },
     start: function () {
         var self = this;
@@ -41,6 +44,7 @@ var TicketApp = Widget.extend({
             self.list.appendTo($('.o_ticket_list'));
             self.notification_manager = new notification.NotificationManager(self);
             self.notification_manager.appendTo(self.$el);
+            bus.on('notification', self, self._onNotification);
         });
     },
     /**
@@ -70,6 +74,36 @@ var TicketApp = Widget.extend({
             self.list.insertTicket(new_ticket);
         });
     },
+    /**
+     * Handle bus notification.
+     *
+     * Currently, 2 notification types are handled in this page:
+     *     - new_ticket: a ticket has been added for the current user
+     *     - unlink_ticket: a ticket has been deleted for the current user
+     *
+     * @param  {Array} notifications Array of notification arriving through the bus.
+     */
+    _onNotification: function (notifications) {
+        var self = this;
+        for (var notif of notifications) {
+            var channel = notif[0], message = notif[1];
+            if (channel[1] !== 'demo.ticket' || channel[2] !== this.user.partner_id) {
+                return;
+            }
+            if (message[0] === 'new_ticket') {
+                var ticket_id = message[1];
+                if (!this.user.tickets.find(t => t.id === ticket_id)) {
+                    this.user.fetchTicket(ticket_id).then(function (new_ticket) {
+                        self.list.insertTicket(new_ticket);
+                        self.trigger_up('notify', {msg: (_t('New Ticket ') + new_ticket.name)});
+                    });
+                }
+            } else if (message[0] === 'unlink_ticket') {
+                this.user.removeTicket(message[1]);
+                this.list.removeTicket(message[1]);
+            }
+        }
+    },
 });
 
 var TicketList = Widget.extend({
@@ -93,6 +127,19 @@ var TicketList = Widget.extend({
         var ticket_node = qweb.render('ticket_viewer.ticket_list.ticket', {ticket: ticket});
         this.$('tbody').prepend(ticket_node);
     },
+    /**
+     * Remove a ticket from the list. If this is the last ticket to be
+     * removed, rerender the widget completely to reflect the 'empty list'
+     * state.
+     * @param  {Integer} id ID of the ticket to remove.
+     */
+    removeTicket: function (id) {
+        this.$('tr[data-id=' + id + ']').remove();
+        if (!this.$('tr[data-id]').length) {
+            this._rerender();
+        }
+    },
+
     /**
      * Rerender the whole widget; will be useful when we switch from
      * an empty list of tickets to one or more ticket (or vice-versa)
@@ -131,5 +178,7 @@ var TicketDialog = Dialog.extend({
 
 var $elem = $('.o_ticket_app');
 var app = new TicketApp(null);
-app.appendTo($elem);
+app.appendTo($elem).then(function () {
+    bus.start_polling();
+});
 });
